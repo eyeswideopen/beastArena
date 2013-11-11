@@ -51,6 +51,7 @@ class GeneticBeastFactory(threading.Thread):
         self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
 
 
+
         self.toolbox.register("evaluate", self.evalArtificialAnt)
         self.toolbox.register("select", tools.selTournament, tournsize=7)
         self.toolbox.register("mate", gp.cxOnePoint)
@@ -64,12 +65,11 @@ class GeneticBeastFactory(threading.Thread):
         routine = gp.evaluate(individual, self.pset)
         # Run the generated routine
         self.ant.doRound(routine)
+        print(Active)
+
         return self.ant.eaten,
 
     def run(self):
-
-
-
         random.seed(69)
         trail_file = open("santafe_trail.txt")
         self.ant.parse_matrix(trail_file)
@@ -85,18 +85,45 @@ class GeneticBeastFactory(threading.Thread):
 
 
 
-class GeneticBeast(object):
+class GeneticBeast(threading.Thread):
     direction = ["north","east","south","west"]
     dir_row = [1, 0, -1, 0]
     dir_col = [0, 1, 0, -1]
+
+
+    def bewege (self, environment):
+
+        self.environment = environment
+        self.move.acquire()
+        self.moving = True
+        self.returnReady.acquire()
+        self.move.notify()
+        self.move.release()
+        if not self.returning:
+            self.returnReady.wait()
+        ret = self.returning
+        self.returning = None
+        self.returnReady.release()
+
+        return ret
     
     def __init__(self, max_moves):
+        threading.Thread.__init__(self)
+
         self.max_moves = max_moves
         self.moves = 0
         self.eaten = 0
         self.routine = None
         self.row_start =0
         self.col_start=0
+
+        self.moving = False
+        self.returning = None
+        self.environment = ""
+        self.move = threading.Condition()
+        self.returnReady = threading.Condition()
+        self.start()
+
         
     def _reset(self):
         self.row = self.row_start 
@@ -105,6 +132,8 @@ class GeneticBeast(object):
         self.moves = 0  
         self.eaten = 0
         self.matrix_exc = copy.deepcopy(self.matrix)
+        self.moving = False
+        self.returning = False
 
     @property
     def position(self):
@@ -138,11 +167,35 @@ class GeneticBeast(object):
         return partial(if_then_else, self.sense_food, out1, out2)
 
 
+
+    def run(self):
+        counter = 0
+        while not "Ende" in self.environment:
+            self.move.acquire()
+            if not self.moving:
+                self.move.wait()
+            self.returnReady.acquire()
+            self.moving = False
+
+            ## do move shit here!
+
+            self.routine()
+            ##return value here!
+            self.returning = counter
+
+            self.move.release()
+            self.returnReady.notify()
+            self.returnReady.release()
+
+
     def doRound(self,routine):
         self._reset()
+        self.routine = routine
+
+
         while self.moves < self.max_moves:
-            routine()
-    
+            self.bewege("")
+
     def parse_matrix(self, matrix):
         self.matrix = list()
         for i, line in enumerate(matrix):

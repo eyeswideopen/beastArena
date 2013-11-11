@@ -38,7 +38,7 @@ class Client(threading.Thread):
 
             self.move.release()
             self.returnReady.notify()
-            self.returnReady.release()
+            self.returnReady.release()>
 
     def bewege(self):
         self.move.acquire()
