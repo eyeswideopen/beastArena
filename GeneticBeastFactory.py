@@ -10,6 +10,9 @@ from deap import base
 from deap import creator
 from deap import tools
 from deap import gp
+from scoop import futures
+
+
 
 def progn(*args):
     for arg in args:
@@ -47,6 +50,7 @@ class GeneticBeastFactory(threading.Thread):
         self.toolbox.register("expr_init", gp.genFull, pset=self.pset, min_=1, max_=2)
 
         # Structure initializers
+        self.toolbox.register("map",futures.map)
         self.toolbox.register("individual", tools.initIterate, creator.Individual, self.toolbox.expr_init)
         self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
 
@@ -65,11 +69,11 @@ class GeneticBeastFactory(threading.Thread):
         routine = gp.evaluate(individual, self.pset)
         # Run the generated routine
         self.ant.doRound(routine)
-        print(Active)
 
         return self.ant.eaten,
 
     def run(self):
+
         random.seed(69)
         trail_file = open("santafe_trail.txt")
         self.ant.parse_matrix(trail_file)
@@ -83,6 +87,7 @@ class GeneticBeastFactory(threading.Thread):
 
         algorithms.eaSimple(pop, self.toolbox, 0.5, 0.2, 40, stats, halloffame=hof)
 
+counter=0
 
 
 class GeneticBeast(threading.Thread):
@@ -139,7 +144,8 @@ class GeneticBeast(threading.Thread):
     def position(self):
         return (self.row, self.col, self.direction[self.dir])
             
-    def turn_left(self): 
+    def turn_left(self):
+
         if self.moves < self.max_moves:
             self.moves += 1
             self.dir = (self.dir - 1) % 4
@@ -191,7 +197,6 @@ class GeneticBeast(threading.Thread):
     def doRound(self,routine):
         self._reset()
         self.routine = routine
-
 
         while self.moves < self.max_moves:
             self.bewege("")
