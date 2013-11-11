@@ -7,9 +7,9 @@ from BeastAnalytics import BeastAnalytics
 from NikolaisBeast import NikolaisBeast
 from SamysBeast import SamysBeast
 from Team8Beast import Team8Beast
-import string, random, time, threadtest, logging
+import string, random, time, threading, logging
 
-class Game(threadtest.Thread):
+class Game(threading.Thread):
     """ 
     global Game class
     here will your beast be registered and seated on WorldMap after it has been 
@@ -21,7 +21,7 @@ class Game(threadtest.Thread):
         constructor --> initialising Variables
         @param getStatisticForBeast List: insert a tupel of chars ('a','b')
         """
-        threadtest.Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.server = None
         self.gui = None
         self.beastObjectMap = {}
@@ -56,6 +56,12 @@ class Game(threadtest.Thread):
         @param beast Beast: is the clients beast
         @return returns the beast's name
         """
+
+        #recursive call for every beast in passed beast array
+        if isinstance(beast,list):
+            for b in beast:
+                self.registerBeast(b)
+
         if self.gameSignOnPossible():
             name = string.ascii_letters[len(self.beastObjectMap)]
         else:
