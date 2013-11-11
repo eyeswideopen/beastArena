@@ -1,0 +1,2 @@
+SamysBeast: 1
+totalGames: 1
