@@ -55,6 +55,8 @@ from deap import base
 from deap import creator
 from deap import tools
 from deap import gp
+from scoop import futures
+import threading
 
 def progn(*args):
     for arg in args:
@@ -69,6 +71,9 @@ def prog3(out1, out2, out3):
 def if_then_else(condition, out1, out2):
     out1() if condition() else out2()
 
+
+ID=1
+
 class AntSimulator(object):
     direction = ["north","east","south","west"]
     dir_row = [1, 0, -1, 0]
@@ -79,6 +84,7 @@ class AntSimulator(object):
         self.moves = 0
         self.eaten = 0
         self.routine = None
+        self.parse_matrix(open("santafe_trail.txt"))
         
     def _reset(self):
         self.row = self.row_start 
@@ -121,7 +127,10 @@ class AntSimulator(object):
    
     def run(self,routine):
         self._reset()
+        counter=0
         while self.moves < self.max_moves:
+            #print(counter)
+            counter+=1
             routine()
     
     def parse_matrix(self, matrix):
@@ -158,6 +167,7 @@ creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax, pset=
 toolbox = base.Toolbox()
 
 # Attribute generator
+toolbox.register("map", futures.map)
 toolbox.register("expr_init", gp.genFull, pset=pset, min_=1, max_=2)
 
 # Structure initializers
@@ -169,6 +179,9 @@ def evalArtificialAnt(individual):
     routine = gp.evaluate(individual, pset)
     # Run the generated routine
     ant.run(routine)
+    print("enes")
+    import time
+    time.sleep(3)
     return ant.eaten,
 
 toolbox.register("evaluate", evalArtificialAnt)
