@@ -1,4 +1,11 @@
+from functools import partial
+
+import copy
 import GeneticBeast
+
+
+def if_then_else(condition, out1, out2):
+    out1() if condition() else out2()
 
 class GeneticBeastRepresentation():
     direction = ["north","east","south","west"]
@@ -8,7 +15,6 @@ class GeneticBeastRepresentation():
 
     def __init__(self, max_moves):
 
-        self.max_moves = max_moves
         self.moves = 0
         self.eaten = 0
         self.routine = None
@@ -17,7 +23,9 @@ class GeneticBeastRepresentation():
 
         self.moving = False
         self.returning = None
-        self.environment = ""
+        self.currentBeast=None #environment,returnValue
+        self.finalEnergy=0
+
 
         
     def _reset(self):
@@ -62,27 +70,6 @@ class GeneticBeastRepresentation():
     def if_food_ahead(self, out1, out2):
         return partial(if_then_else, self.sense_food, out1, out2)
 
-
-
-    def run(self):
-        counter = 0
-
-        while not "Ende" in self.environment:
-            self.move.acquire()
-            if not self.moving:
-                self.move.wait()
-            self.returnReady.acquire()
-            self.moving = False
-
-            ## do move shit here!
-
-            self.routine()
-            ##return value here!
-            self.returning = counter
-
-            self.move.release()
-            self.returnReady.notify()
-            self.returnReady.release()
 
 
     def doRound(self,routine):
