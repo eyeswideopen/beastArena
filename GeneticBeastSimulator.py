@@ -1,4 +1,3 @@
-import copy
 import random,threading
 
 import numpy
@@ -22,8 +21,7 @@ def prog2(out1, out2):
 def prog3(out1, out2, out3):     
     return partial(progn,out1,out2,out3)  
 
-def if_then_else(condition, out1, out2):
-    out1() if condition() else out2()
+
 
 
 class GeneticBeastSimulator(threading.Thread):
@@ -41,7 +39,7 @@ class GeneticBeastSimulator(threading.Thread):
         self.pset.addTerminal(self.beastRepresentation.turn_right)
 
         creator.create("FitnessMax", base.Fitness, weights=(1.0,))
-        creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax, pset=self.pset,beast=GeneticBeastRepresentation(300))
+        creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax, pset=self.pset)
         self.toolbox = base.Toolbox()
 
         # Attribute generator
