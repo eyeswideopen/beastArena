@@ -106,3 +106,6 @@ class Config(object):
     def __getConnectionLimitPerClient__():
         return int(Config.config.get('networking', 'connectionLimitPerClient'))
 
+    @staticmethod
+    def __geneticBeastTraining__():
+        return True if Config.config.get('geneticBeast', 'geneticBeastTraining')=='True' else False

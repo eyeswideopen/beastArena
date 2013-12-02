@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import urwid, time, threadtest, logging
+import urwid, time, threading, logging
 from LoggingHandler import UrwidLoggingHandler
 
-class UrwidVisualisation(threadtest.Thread):
+class UrwidVisualisation(threading.Thread):
     """
     main visualisation class which runs in its own thread and and is based on
     the python package urwid
@@ -13,7 +13,7 @@ class UrwidVisualisation(threadtest.Thread):
         """
         UrwidVisualisation constructor with all initial parametrisation
         """
-        threadtest.Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.game = game
         self.newGame = None
         self.gameChanged = False

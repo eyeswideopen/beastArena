@@ -6,17 +6,20 @@ from UrwidVisualisation import UrwidVisualisation
 from Server import Server
 from Config import Config
 from GameWinners import GameWinners
-import os, logging, sys, threadtest, time
+import os, logging, sys, threading, time, multiprocessing
 
-class beast_arena(threadtest.Thread):
+
+class beast_arena(threading.Thread):
     '''
     main module where everything happens
     '''
+
     def __init__(self):
         '''
         basic constructor
         '''
-        threadtest.Thread.__init__(self)
+        threading.Thread.__init__(self)
+        #self.geneticBeastsRegistered = False
         self.urwid = None
         self.gamecount = 1
         self.game = None
@@ -25,8 +28,8 @@ class beast_arena(threadtest.Thread):
         self.winners = GameWinners()
         self.useUrwid = Config.__getUseUrwidVisualisation__()
         self.useNetworking = Config.__getUseNetworking__()
-        self.geneticBeastTraining = Config.__geneticBeastTraining__()
-        self.geneticBeasts = None
+        #self.geneticBeastTraining = Config.__geneticBeastTraining__()
+        #self.geneticBeasts = []
         self.log = logging.getLogger('beast-arena-logging')
 
     def runUrwid(self):
@@ -39,7 +42,7 @@ class beast_arena(threadtest.Thread):
             time.sleep(0.05)
 
         self.urwid = UrwidVisualisation(self.game)
-#       update content Loop:
+        #       update content Loop:
         self.urwid.start()
         #main urwid loop:
         self.urwid.runLoop()
@@ -62,13 +65,14 @@ class beast_arena(threadtest.Thread):
             streamHandler.setLevel(logging.INFO)
             self.log.addHandler(streamHandler)
         if not os.path.exists('log'):
-    		os.makedirs('log')
+            os.makedirs('log')
         fileHandler = logging.FileHandler('log/beast-arena.log')
         fileHandler.setLevel(logging.WARNING)
         self.log.addHandler(fileHandler)
 
     def setGeneticBeasts(self, geneticBeasts):
         self.geneticBeasts = geneticBeasts
+
 
     def run(self):
         """
@@ -87,19 +91,19 @@ class beast_arena(threadtest.Thread):
                 self.urwid.changeGame(self.game)
 
             #
-            if self.geneticBeastTraining:
-
-                #call of deap goes here. callback is setGeneticBeasts()
-
-                while not self.geneticBeasts:
-                    time.sleep(0.05);
-
-                for beast in self.geneticBeasts:
-                    self.game.registerBeast(beast)
-
-                self.log.info('number of current game: ' + str(self.gamecount))
-                self.gamecount += 1
-                self.game.start()
+            # if self.geneticBeastTraining:
+            #
+            #     while not self.geneticBeastsRegistered:
+            #         time.sleep(0.05)
+            #
+            #     for beast in self.geneticBeasts:
+            #         print("yes!")
+            #         self.game.registerBeast(beast)
+            #     self.geneticBeastsRegistered = False
+            #
+            #     self.log.info('number of current game: ' + str(self.gamecount))
+            #     self.gamecount += 1
+            #     self.game.start()
 
             #loop for enabled networking
             elif self.useNetworking:
@@ -116,13 +120,15 @@ class beast_arena(threadtest.Thread):
                 self.log.info('Game start will be: ' + str(self.game.startTime))
 
                 while self.running:
-                    if time.time() >= self.game.startTimeMillis and not(self.game.gameStarted):
+                    if time.time() >= self.game.startTimeMillis and not (self.game.gameStarted):
                         if len(self.game.beastObjectMap) > 0:
-                            self.log.info('Starting Game No. %s (' + str(self.game.startTime) + ')...', str(self.gamecount))
+                            self.log.info('Starting Game No. %s (' + str(self.game.startTime) + ')...',
+                                          str(self.gamecount))
                             self.game.start()
                             self.gamecount += 1
                         else:
-                            self.log.info('Canceled start of scheduled Game (' + str(self.game.startTime) + '): no client registered!')
+                            self.log.info('Canceled start of scheduled Game (' + str(
+                                self.game.startTime) + '): no client registered!')
                             self.game.gameFinished = True
                         break
                     time.sleep(0.05)
@@ -138,7 +144,16 @@ class beast_arena(threadtest.Thread):
                 time.sleep(0.1)
 
             self.winners.addWinner(self.game.rankingList, self.gamecount - 1)
+
             time.sleep(2) # pause between two games
+
+
+    # def addBeast(self, beast):
+    #     self.geneticBeasts.append(beast)
+    #     print("registered: " + str(len(self.geneticBeasts)))
+    #     if len(self.geneticBeasts) == multiprocessing.cpu_count():
+    #         self.geneticBeastsRegistered = True
+
 
 if __name__ == '__main__':
     try:
@@ -155,15 +170,14 @@ if __name__ == '__main__':
     except KeyboardInterrupt, SystemExit:
         game.log.info("\nCaught KeyboardInterrupt, exiting...")
         game.log.debug("Currently running threads:")
-        for thread in threadtest.enumerate():
+        for thread in threading.enumerate():
             game.log.debug(' ' + str(thread))
-            if not isinstance(thread,threadtest._MainThread) and thread.running:
-		thread.stop()
-	        thread.join()
-
+            if not isinstance(thread, threading._MainThread) and thread.running:
+                thread.stop()
+                thread.join()
 
         game.log.debug('Threads after stop() & join():')
-        for thread in threadtest.enumerate():
+        for thread in threading.enumerate():
             game.log.debug(' ' + str(thread))
         game.log.debug('Exiting beast-arena MainThread...')
         game.log.info('beast-arena stopped: %s games played.', str(game.gamecount))

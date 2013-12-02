@@ -3,9 +3,9 @@
 from Config import Config
 from RemoteBeast import RemoteBeast
 from SocketCommunication import read, write
-import socket, ssl, select, threadtest, sys, logging, time
+import socket, ssl, select, threading, sys, logging, time
 
-class Server(threadtest.Thread):
+class Server(threading.Thread):
     """
     @class Server
     this Server handles the connections to several clients, answers requests,
@@ -18,7 +18,7 @@ class Server(threadtest.Thread):
         # Map with key (client addr) and value (count of established connections)
         self.clientIpCountMap = {}
         self.connectionLimitPerClient = Config.__getConnectionLimitPerClient__()
-        threadtest.Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.daemon = True
         self.log = logging.getLogger('beast-arena-logger')
         self.running = False

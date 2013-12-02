@@ -3,9 +3,9 @@ from functools import partial
 import copy
 import GeneticBeast
 
+def if_then_else(input, output1, output2):
+        return output1 if input else output2
 
-def if_then_else(condition, out1, out2):
-    out1() if condition() else out2()
 
 class GeneticBeastRepresentation():
     direction = ["north","east","south","west"]
@@ -13,7 +13,9 @@ class GeneticBeastRepresentation():
     dir_col = [0, 1, 0, -1]
 
 
-    def __init__(self, max_moves):
+    def __init__(self, max_moves, simulator=None):
+
+        self.simulator = simulator
 
         self.moves = 0
         self.eaten = 0
@@ -23,16 +25,18 @@ class GeneticBeastRepresentation():
 
         self.moving = False
         self.returning = None
-        self.currentBeast=None #environment,returnValue
-        self.finalEnergy=0
+        self.currentBeast = None #environment,returnValue
+        self.finalEnergy = 0
 
 
-        
+    def setSimulator(self,sim):
+        self.simulator=sim
+
     def _reset(self):
-        self.row = self.row_start 
-        self.col = self.col_start 
+        self.row = self.row_start
+        self.col = self.col_start
         self.dir = 1
-        self.moves = 0  
+        self.moves = 0
         self.eaten = 0
         self.matrix_exc = copy.deepcopy(self.matrix)
         self.moving = False
@@ -41,7 +45,7 @@ class GeneticBeastRepresentation():
     @property
     def position(self):
         return (self.row, self.col, self.direction[self.dir])
-            
+
     def turn_left(self):
 
         if self.moves < self.max_moves:
@@ -50,9 +54,9 @@ class GeneticBeastRepresentation():
 
     def turn_right(self):
         if self.moves < self.max_moves:
-            self.moves += 1    
+            self.moves += 1
             self.dir = (self.dir + 1) % 4
-        
+
     def move_forward(self):
         if self.moves < self.max_moves:
             self.moves += 1
@@ -64,17 +68,29 @@ class GeneticBeastRepresentation():
 
     def sense_food(self):
         ahead_row = (self.row + self.dir_row[self.dir]) % self.matrix_row
-        ahead_col = (self.col + self.dir_col[self.dir]) % self.matrix_col        
+        ahead_col = (self.col + self.dir_col[self.dir]) % self.matrix_col
         return self.matrix_exc[ahead_row][ahead_col] == "food"
-   
+
     def if_food_ahead(self, out1, out2):
         return partial(if_then_else, self.sense_food, out1, out2)
 
+    def ifFoodAtPosition(self, pos, out1, out2):
+        return out1
+
+    def monsterAtPosition(self, pos):
+        return
 
 
-    def doRound(self,routine):
+
+    def move(self, pos):
+        return
+
+    def doRound(self, routine):
         self._reset()
-        beast = GeneticBeast(self,routine)
+        #add beast to beastList
+        beast = GeneticBeast.GeneticBeast(self, routine)
+        print("created")
+        self.simulator.addBeast(beast)
         beast.play()
 
     def parse_matrix(self, matrix):

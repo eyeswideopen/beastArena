@@ -56,7 +56,7 @@ from deap import creator
 from deap import tools
 from deap import gp
 from scoop import futures
-import threading
+import GeneticBeast
 
 def progn(*args):
     for arg in args:
@@ -71,8 +71,8 @@ def prog3(out1, out2, out3):
 def if_then_else(condition, out1, out2):
     out1() if condition() else out2()
 
+game = None
 
-ID=1
 
 class AntSimulator(object):
     direction = ["north","east","south","west"]
@@ -80,6 +80,7 @@ class AntSimulator(object):
     dir_col = [0, 1, 0, -1]
     
     def __init__(self, max_moves):
+        print("hier samma")
         self.max_moves = max_moves
         self.moves = 0
         self.eaten = 0
@@ -126,15 +127,22 @@ class AntSimulator(object):
         return partial(if_then_else, self.sense_food, out1, out2)
    
     def run(self, routine):
+
         self._reset()
-        counter=0
-        while True:
-            print(id(routine))
-            time.sleep(1)
-        while self.moves < self.max_moves:
-            #print(counter)
-            counter+=1
-            routine()
+        #add beast to beastList
+        beast = GeneticBeast.GeneticBeast(self, routine)
+        print("created")
+        beast.play()
+
+        # self._reset()
+        # counter=0
+        # while True:
+        #     print(id(routine))
+        #     time.sleep(1)
+        # while self.moves < self.max_moves:
+        #     #print(counter)
+        #     counter+=1
+        #     routine()
     
     def parse_matrix(self, matrix):
         self.matrix = list()
@@ -194,6 +202,8 @@ toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut)
 
 def main():
+    print("main")
+
     random.seed(69)
 
     trail_file = open("santafe_trail.txt")

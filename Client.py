@@ -9,60 +9,69 @@ from NikolaisBeast import NikolaisBeast
 from Team8Beast import Team8Beast
 import sys
 
+
 class Client():
     """
     @class Client
     """
 
-    def __init__(self):
+    def __init__(self, host=None, team=None, beast=Team8Beast()):
         """
         creating ssl connection to given host and port
         you also have to spezifiy the server certificate
         """
+        if not host:
+            if len(sys.argv)<3:
+                print 'usage: Client.py <host> <team number>'
+                sys.exit()
+            host = sys.argv[1]
 
-        if len(sys.argv) < 3:
-            print 'usage: Client.py <host> <team number>'
-            sys.exit()
-        host = sys.argv[1]
-        team = sys.argv[2]
+        if not team:
+            if len(sys.argv)<3:
+                print 'usage: Client.py <host> <team number>'
+                sys.exit()
+            team = sys.argv[2]
+
 
         print 'Host:', host, ', Team:', team
 
         self.hostPort = (host, 10000 + int(team))
         self.serverCert = 'clientGui/certs/team' + team + '.crt'
-        self.beast = Team8Beast()
         self.worldSize = None
         self.connection = None
-    
+        self.beast = beast
+
     def connectToServer(self):
         """
         trys to connect to server with given arguments
         @return: returns connection status
         """
-	
+
         try:
+            print("ssl: " + str(Config.__getSSL__()))
             if (Config.__getSSL__()):
-	            self.connection = ssl.wrap_socket(socket(), cert_reqs=ssl.CERT_REQUIRED, ssl_version=ssl.PROTOCOL_SSLv3, ca_certs=self.serverCert)
+                self.connection = ssl.wrap_socket(socket(), cert_reqs=ssl.CERT_REQUIRED, ssl_version=ssl.PROTOCOL_SSLv3,
+                                                  ca_certs=self.serverCert)
             else:
-	        	self.connection = socket()
-	        	
+                self.connection = socket()
+
             self.connection.connect(self.hostPort)
             return True
         except Exception as e:
             print 'Connection failed.'
             print e
-            return False          
-    
+            return False
+
     def registration(self):
         """
         default activity with requests and responses between client and server
         after sending 'Anmeldung!' and receiving an char the client is  
         registered and the listening-loop will be started
         """
-        
+
         if not self.connectToServer():
             return
-        
+
         request = 'Spielbeginn?'
         print 'request:', request
         write(self.connection, request)
@@ -85,9 +94,8 @@ class Client():
             return
 
         self.listening()
-    
 
-   
+
     def listening(self):
 
         """
@@ -105,7 +113,7 @@ class Client():
                 print 'bewegeString=' + bewegeString #string which is given by the server
                 if 'Ende' in bewegeString:
                     break
-                #sending our calculated destination
+                    #sending our calculated destination
                 destination = str(self.beast.bewege(bewegeString))
                 if len(destination) > 0 and destination != 'None':
                     print 'sent=' + destination
@@ -114,6 +122,7 @@ class Client():
                 print time.asctime(), e, ': lost connection to Server'
                 break
         self.connection.close()
+
 
 if __name__ == '__main__':
     client = Client()
