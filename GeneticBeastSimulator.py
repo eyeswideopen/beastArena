@@ -357,12 +357,14 @@ def main():
     #rounds = 1
     algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 1, stats, halloffame=hof)
 
-    print("hoff written")
 
+    print str(hof)
+    
     file = open("dont_hassle_the_hof", "w")
     file.write(hof)
     file.close()
-    
+    print("hoff written")
+
     return pop, hof, stats
 
 if __name__ == "__main__":
