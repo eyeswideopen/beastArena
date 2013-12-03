@@ -343,8 +343,6 @@ toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut)
 def main():
     print("main")
 
-    random.seed(69)
-
     trail_file = open("santafe_trail.txt")
     ant.parse_matrix(trail_file)
     
@@ -355,8 +353,11 @@ def main():
     stats.register("std", tools.std)
     stats.register("min", min)
     stats.register("max", max)
-    
-    algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 40, stats, halloffame=hof)
+
+    #rounds = 1
+    algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 1, stats, halloffame=hof)
+
+    print("hoff written")
 
     file = open("dont_hassle_the_hof", "w")
     file.write(hof)
