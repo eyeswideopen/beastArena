@@ -57,6 +57,7 @@ from deap import tools
 from deap import gp
 from scoop import futures
 import GeneticBeast
+import multiprocessing
 
 def progn(*args):
     for arg in args:
@@ -160,6 +161,24 @@ class GeneticBeastRepresentation():
         print("created")
         beast.play()
 
+    def parse_matrix(self, matrix):
+        self.matrix = list()
+        for i, line in enumerate(matrix):
+            self.matrix.append(list())
+            for j, col in enumerate(line):
+                if col == "#":
+                    self.matrix[-1].append("food")
+                elif col == ".":
+                    self.matrix[-1].append("empty")
+                elif col == "S":
+                    self.matrix[-1].append("empty")
+                    self.row_start = self.row = i
+                    self.col_start = self.col = j
+                    self.dir = 1
+        self.matrix_row = len(self.matrix)
+        self.matrix_col = len(self.matrix[0])
+        self.matrix_exc = copy.deepcopy(self.matrix)
+
 ant = GeneticBeastRepresentation()
 
 pset = gp.PrimitiveSet("MAIN", 0)
@@ -191,7 +210,7 @@ def evalArtificialAnt(individual):
     ant.run(routine)
     import time
     time.sleep(3)
-    return ant.eaten,
+    return 0, #ant.eaten
 
 toolbox.register("evaluate", evalArtificialAnt)
 toolbox.register("select", tools.selTournament, tournsize=7)
