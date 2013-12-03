@@ -363,7 +363,7 @@ def evalArtificialAnt(individual):
 toolbox.register("evaluate", evalArtificialAnt)
 toolbox.register("select", tools.selTournament, tournsize=7)
 toolbox.register("mate", gp.cxOnePoint)
-toolbox.register("expr_mut", gp.genFull, min_=0, max_=10)
+toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut)
 
 
@@ -373,7 +373,7 @@ def main():
     trail_file = open("santafe_trail.txt")
     ant.parse_matrix(trail_file)
 
-    pop = toolbox.population(n=5)
+    pop = toolbox.population(n=multiprocessing.cpu_count())
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", tools.mean)
@@ -382,7 +382,7 @@ def main():
     stats.register("max", max)
 
     #rounds = 1
-    algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 1, stats, halloffame=hof)
+    algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 720, stats, halloffame=hof)
 
     print str(hof)
 

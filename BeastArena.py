@@ -90,23 +90,9 @@ class beast_arena(threading.Thread):
                     time.sleep(0.1)
                 self.urwid.changeGame(self.game)
 
-            #
-            # if self.geneticBeastTraining:
-            #
-            #     while not self.geneticBeastsRegistered:
-            #         time.sleep(0.05)
-            #
-            #     for beast in self.geneticBeasts:
-            #         print("yes!")
-            #         self.game.registerBeast(beast)
-            #     self.geneticBeastsRegistered = False
-            #
-            #     self.log.info('number of current game: ' + str(self.gamecount))
-            #     self.gamecount += 1
-            #     self.game.start()
 
             #loop for enabled networking
-            elif self.useNetworking:
+            if self.useNetworking:
                 #first time server initialisation
                 if self.server == None:
                     self.server = Server(self.game)
