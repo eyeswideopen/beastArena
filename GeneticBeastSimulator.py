@@ -373,7 +373,7 @@ def main():
     trail_file = open("santafe_trail.txt")
     ant.parse_matrix(trail_file)
 
-    pop = toolbox.population(n=multiprocessing.cpu_count())
+    pop = toolbox.population(n=5)
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", tools.mean)
