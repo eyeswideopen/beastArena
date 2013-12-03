@@ -331,9 +331,8 @@ def evalArtificialAnt(individual):
     routine = gp.evaluate(individual, pset)
     # Run the generated routine
     ant.run(routine)
-    import time
-    time.sleep(3)
-    return ant.finalEnergy,
+    print("ant.finalEnergy: " + str(ant.finalEnergy) + " ant.currentBeast.energy: " + str(ant.currentBeast.energy))
+    return ant.currentBeast.energy,
 
 toolbox.register("evaluate", evalArtificialAnt)
 toolbox.register("select", tools.selTournament, tournsize=7)

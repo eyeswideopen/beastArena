@@ -6,6 +6,7 @@ class GeneticBeast():
     def __init__(self, rep, routine):
         self.routine = routine
         self.rep = rep
+        self.energy = None
         self.returnValue = 13
         self.environment = ""
 
@@ -16,9 +17,9 @@ class GeneticBeast():
 
         params = paramString.split(';', 2)
         if len(params[0]) > 0:
-            energy = int(params[0])
+            self.energy = int(params[0])
         else:
-            energy = 0
+            self.energy = 0
 
         self.environment = params[1]
         self.rep.environment = self.environment
@@ -26,8 +27,8 @@ class GeneticBeast():
 
         self.routine()
 
-        if energy == 0 or "Ende" in self.environment:
-            self.rep.finalEnergy = energy
+        if self.energy == 0 or "Ende" in self.environment:
+            self.rep.finalEnergy = self.energy
 
         return self.returnValue
 
