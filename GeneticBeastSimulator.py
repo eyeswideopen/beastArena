@@ -12,6 +12,7 @@ from scoop import futures
 from GeneticBeastRepresentation import GeneticBeastRepresentation
 from BeastArena import beast_arena
 
+
 def progn(*args):
     for arg in args:
         arg()
@@ -24,7 +25,8 @@ def prog2(out1, out2):
 def prog3(out1, out2, out3):
     return partial(progn, out1, out2, out3)
 
-beastRepresentation=GeneticBeastRepresentation(600)
+
+beastRepresentation = GeneticBeastRepresentation()
 
 pset = gp.PrimitiveSet("MAIN", 0)
 pset.addPrimitive(beastRepresentation.if_food_ahead, 2)
@@ -65,12 +67,11 @@ toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut)
 
 
-
 class GeneticBeastSimulator(threading.Thread):
     def __init__(self, game):
         threading.Thread.__init__(self)
         global beastRepresentation
-        beastRepresentation.setSimulator(self)
+        beastRepresentation.simulator = self
 
         self.game = game
         self.beastList = []

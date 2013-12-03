@@ -21,14 +21,13 @@ class GeneticBeast():
         else:
             energy = 0
 
-        environment = params[1]
-
-        self.environment = environment
+        self.environment = params[1]
+        self.rep.environment = self.environment
         self.rep.currentBeast = self
 
         self.routine()
 
-        if energy == 0 or "Ende" in environment:
+        if energy == 0 or "Ende" in self.environment:
             self.energy = energy
 
         return self.returnValue

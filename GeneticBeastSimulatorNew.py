@@ -74,41 +74,67 @@ def if_then_else(condition, out1, out2):
 game = None
 
 
-class AntSimulator(object):
-    direction = ["north","east","south","west"]
-    dir_row = [1, 0, -1, 0]
-    dir_col = [0, 1, 0, -1]
-    
-    def __init__(self, max_moves):
-        print("hier samma")
-        self.max_moves = max_moves
-        self.moves = 0
-        self.eaten = 0
-        self.routine = None
-        self.parse_matrix(open("santafe_trail.txt"))
-        
+class GeneticBeastRepresentation():
+    def __init__(self):
+
+        self.simulator = None
+        self.currentBeast = None
+        self.environment = None
+        self.finalEnergy = 0
+
     def _reset(self):
-        self.row = self.row_start 
-        self.col = self.col_start 
-        self.dir = 1
-        self.moves = 0  
-        self.eaten = 0
-        self.matrix_exc = copy.deepcopy(self.matrix)
+        self.currentBeast = None
+        self.finalEnergy = None
+        self.environment = None
+
+
+    # own primitives
+    def ifFoodAtPosition(self, pos, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(pos), out1, out2)
+
+    def ifBiggerMonsterAtPosition(self, pos, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(pos), out1, out2)
+
+    def ifSmallerMonsterAtPosition(self, pos, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(pos), out1, out2)
+
+    # own terminal
+    def move(self, pos):
+        self.currentBeast.returnValue = pos
+        return
+
+    # own helper methods
+    def translateToBigEnv(self, pos):
+        return pos + 7 + pos/3*2
+
+    def translateToSmallEnv(self, pos):
+        return pos - 5 - pos/5*2
+
+    def checkBiggerMonsterAtPos(self, pos):
+        return True if self.environment[self.translateToBigEnv(pos)] == ">" else False
+
+    def checkSmallerMonsterAtPos(self, pos):
+        return True if self.environment[self.translateToBigEnv(pos)] == "<" else False
+
+    def checkFoodMonsterAtPos(self, pos):
+        return True if self.environment[self.translateToBigEnv(pos)] == "*" else False
+
 
     @property
     def position(self):
         return (self.row, self.col, self.direction[self.dir])
-            
-    def turn_left(self): 
+
+    def turn_left(self):
+
         if self.moves < self.max_moves:
             self.moves += 1
             self.dir = (self.dir - 1) % 4
 
     def turn_right(self):
         if self.moves < self.max_moves:
-            self.moves += 1    
+            self.moves += 1
             self.dir = (self.dir + 1) % 4
-        
+
     def move_forward(self):
         if self.moves < self.max_moves:
             self.moves += 1
@@ -120,9 +146,9 @@ class AntSimulator(object):
 
     def sense_food(self):
         ahead_row = (self.row + self.dir_row[self.dir]) % self.matrix_row
-        ahead_col = (self.col + self.dir_col[self.dir]) % self.matrix_col        
+        ahead_col = (self.col + self.dir_col[self.dir]) % self.matrix_col
         return self.matrix_exc[ahead_row][ahead_col] == "food"
-   
+
     def if_food_ahead(self, out1, out2):
         return partial(if_then_else, self.sense_food, out1, out2)
    
@@ -134,35 +160,7 @@ class AntSimulator(object):
         print("created")
         beast.play()
 
-        # self._reset()
-        # counter=0
-        # while True:
-        #     print(id(routine))
-        #     time.sleep(1)
-        # while self.moves < self.max_moves:
-        #     #print(counter)
-        #     counter+=1
-        #     routine()
-    
-    def parse_matrix(self, matrix):
-        self.matrix = list()
-        for i, line in enumerate(matrix):
-            self.matrix.append(list())
-            for j, col in enumerate(line):
-                if col == "#":
-                    self.matrix[-1].append("food")
-                elif col == ".":
-                    self.matrix[-1].append("empty")
-                elif col == "S":
-                    self.matrix[-1].append("empty")
-                    self.row_start = self.row = i
-                    self.col_start = self.col = j
-                    self.dir = 1
-        self.matrix_row = len(self.matrix)
-        self.matrix_col = len(self.matrix[0])
-        self.matrix_exc = copy.deepcopy(self.matrix)
-
-ant = AntSimulator(600)
+ant = GeneticBeastRepresentation()
 
 pset = gp.PrimitiveSet("MAIN", 0)
 pset.addPrimitive(ant.if_food_ahead, 2)
@@ -209,7 +207,7 @@ def main():
     trail_file = open("santafe_trail.txt")
     ant.parse_matrix(trail_file)
     
-    pop = toolbox.population(n=300)
+    pop = toolbox.population(n=multiprocessing.cpu_count())
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", tools.mean)

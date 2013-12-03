@@ -3,44 +3,69 @@ from functools import partial
 import copy
 import GeneticBeast
 
-def if_then_else(input, output1, output2):
-        return output1 if input else output2
+
+def progn(*args):
+    for arg in args:
+        arg()
+
+
+def prog2(out1, out2):
+    return partial(progn, out1, out2)
+
+
+def prog3(out1, out2, out3):
+    return partial(progn, out1, out2, out3)
+
+
+def if_then_else(condition, out1, out2):
+    out1() if condition() else out2()
 
 
 class GeneticBeastRepresentation():
-    direction = ["north","east","south","west"]
-    dir_row = [1, 0, -1, 0]
-    dir_col = [0, 1, 0, -1]
+    def __init__(self):
 
-
-    def __init__(self, max_moves, simulator=None):
-
-        self.simulator = simulator
-
-        self.moves = 0
-        self.eaten = 0
-        self.routine = None
-        self.row_start =0
-        self.col_start=0
-
-        self.moving = False
-        self.returning = None
-        self.currentBeast = None #environment,returnValue
+        self.simulator = None
+        self.currentBeast = None
+        self.environment = None
         self.finalEnergy = 0
 
-
-    def setSimulator(self,sim):
-        self.simulator=sim
-
     def _reset(self):
-        self.row = self.row_start
-        self.col = self.col_start
-        self.dir = 1
-        self.moves = 0
-        self.eaten = 0
-        self.matrix_exc = copy.deepcopy(self.matrix)
-        self.moving = False
-        self.returning = False
+        self.currentBeast = None
+        self.finalEnergy = None
+        self.environment = None
+
+
+    # own primitives
+    def ifFoodAtPosition(self, pos, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(pos), out1, out2)
+
+    def ifBiggerMonsterAtPosition(self, pos, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(pos), out1, out2)
+
+    def ifSmallerMonsterAtPosition(self, pos, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(pos), out1, out2)
+
+    # own terminal
+    def move(self, pos):
+        self.currentBeast.returnValue = pos
+        return
+
+    # own helper methods
+    def translateToBigEnv(self, pos):
+        return pos + 7 + pos/3*2
+
+    def translateToSmallEnv(self, pos):
+        return pos - 5 - pos/5*2
+
+    def checkBiggerMonsterAtPos(self, pos):
+        return True if self.environment[self.translateToBigEnv(pos)] == ">" else False
+
+    def checkSmallerMonsterAtPos(self, pos):
+        return True if self.environment[self.translateToBigEnv(pos)] == "<" else False
+
+    def checkFoodMonsterAtPos(self, pos):
+        return True if self.environment[self.translateToBigEnv(pos)] == "*" else False
+
 
     @property
     def position(self):
@@ -74,16 +99,6 @@ class GeneticBeastRepresentation():
     def if_food_ahead(self, out1, out2):
         return partial(if_then_else, self.sense_food, out1, out2)
 
-    def ifFoodAtPosition(self, pos, out1, out2):
-        return out1
-
-    def monsterAtPosition(self, pos):
-        return
-
-
-
-    def move(self, pos):
-        return
 
     def doRound(self, routine):
         self._reset()
