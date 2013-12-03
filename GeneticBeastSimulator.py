@@ -382,7 +382,7 @@ def main():
     stats.register("max", max)
 
     #rounds = 1
-    algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 720, stats, halloffame=hof)
+    algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 1, stats, halloffame=hof)
 
     print str(hof)
 
