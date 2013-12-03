@@ -108,10 +108,10 @@ class GeneticBeastRepresentation():
 
     # own helper methods
     def translateToBigEnv(self, pos):
-        return pos + 7 + pos / 3 * 2
+        return pos + 6 + pos / 3 * 2
 
     def translateToSmallEnv(self, pos):
-        return pos - 5 - pos / 5 * 2
+        return pos - 4 - pos / 5 * 2
 
     def checkBiggerMonsterAtPos(self, pos):
 
