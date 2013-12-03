@@ -386,10 +386,10 @@ def main():
 
     print str(hof)
 
-    myFile = open("dont_hassle_the_hof", "wb")
-    pickle.dump(myFile, hof)
-    myFile.close()
-    print("hoff written")
+    # myFile = open("dont_hassle_the_hof", "wb")
+    # pickle.dump(myFile, hof)
+    # myFile.close()
+    # print("hoff written")
 
     return pop, hof, stats
 
