@@ -58,6 +58,7 @@ from deap import gp
 from scoop import futures
 import GeneticBeast
 import multiprocessing
+import pickle
 
 # def progn(*args):
 #     for arg in args:
@@ -71,6 +72,7 @@ import multiprocessing
 
 def if_then_else(condition, out1, out2):
     out1() if condition else out2()
+
 
 game = None
 
@@ -106,10 +108,10 @@ class GeneticBeastRepresentation():
 
     # own helper methods
     def translateToBigEnv(self, pos):
-        return pos + 7 + pos/3*2
+        return pos + 7 + pos / 3 * 2
 
     def translateToSmallEnv(self, pos):
-        return pos - 5 - pos/5*2
+        return pos - 5 - pos / 5 * 2
 
     def checkBiggerMonsterAtPos(self, pos):
 
@@ -129,81 +131,102 @@ class GeneticBeastRepresentation():
         return True if self.environment[self.translateToBigEnv(pos)] == "*" else False
 
 
-
-
-
-
-
     def smallerBeastAt0(self, out1, out2):
         return partial(if_then_else, self.checkSmallerMonsterAtPos(0), out1, out2)
+
     def smallerBeastAt1(self, out1, out2):
         return partial(if_then_else, self.checkSmallerMonsterAtPos(1), out1, out2)
+
     def smallerBeastAt2(self, out1, out2):
         return partial(if_then_else, self.checkSmallerMonsterAtPos(2), out1, out2)
+
     def smallerBeastAt3(self, out1, out2):
         return partial(if_then_else, self.checkSmallerMonsterAtPos(3), out1, out2)
+
     def smallerBeastAt5(self, out1, out2):
         return partial(if_then_else, self.checkSmallerMonsterAtPos(5), out1, out2)
+
     def smallerBeastAt6(self, out1, out2):
         return partial(if_then_else, self.checkSmallerMonsterAtPos(6), out1, out2)
+
     def smallerBeastAt7(self, out1, out2):
         return partial(if_then_else, self.checkSmallerMonsterAtPos(7), out1, out2)
+
     def smallerBeastAt8(self, out1, out2):
         return partial(if_then_else, self.checkSmallerMonsterAtPos(8), out1, out2)
 
     def biggerBeastAt0(self, out1, out2):
         return partial(if_then_else, self.checkBiggerMonsterAtPos(0), out1, out2)
+
     def biggerBeastAt1(self, out1, out2):
         return partial(if_then_else, self.checkBiggerMonsterAtPos(1), out1, out2)
+
     def biggerBeastAt2(self, out1, out2):
         return partial(if_then_else, self.checkBiggerMonsterAtPos(2), out1, out2)
+
     def biggerBeastAt3(self, out1, out2):
         return partial(if_then_else, self.checkBiggerMonsterAtPos(3), out1, out2)
+
     def biggerBeastAt5(self, out1, out2):
         return partial(if_then_else, self.checkBiggerMonsterAtPos(5), out1, out2)
+
     def biggerBeastAt6(self, out1, out2):
         return partial(if_then_else, self.checkBiggerMonsterAtPos(6), out1, out2)
+
     def biggerBeastAt7(self, out1, out2):
         return partial(if_then_else, self.checkBiggerMonsterAtPos(7), out1, out2)
+
     def biggerBeastAt8(self, out1, out2):
         return partial(if_then_else, self.checkBiggerMonsterAtPos(8), out1, out2)
 
 
     def foodAt0(self, out1, out2):
         return partial(if_then_else, self.checkFoodAtPos(0), out1, out2)
+
     def foodAt1(self, out1, out2):
         return partial(if_then_else, self.checkFoodAtPos(1), out1, out2)
+
     def foodAt2(self, out1, out2):
         return partial(if_then_else, self.checkFoodAtPos(2), out1, out2)
+
     def foodAt3(self, out1, out2):
         return partial(if_then_else, self.checkFoodAtPos(3), out1, out2)
+
     def foodAt5(self, out1, out2):
         return partial(if_then_else, self.checkFoodAtPos(5), out1, out2)
+
     def foodAt6(self, out1, out2):
         return partial(if_then_else, self.checkFoodAtPos(6), out1, out2)
+
     def foodAt7(self, out1, out2):
         return partial(if_then_else, self.checkFoodAtPos(7), out1, out2)
+
     def foodAt8(self, out1, out2):
         return partial(if_then_else, self.checkFoodAtPos(8), out1, out2)
 
     def moveTo0(self):
         self.move(0)
+
     def moveTo1(self):
         self.move(1)
+
     def moveTo2(self):
         self.move(2)
+
     def moveTo3(self):
         self.move(3)
+
     def moveTo5(self):
         self.move(5)
+
     def moveTo6(self):
         self.move(6)
+
     def moveTo7(self):
         self.move(7)
+
     def moveTo8(self):
         self.move(8)
-
-
 
 
     @property
@@ -237,7 +260,7 @@ class GeneticBeastRepresentation():
 
     def if_food_ahead(self, out1, out2):
         return partial(if_then_else, self.sense_food, out1, out2)
-   
+
     def run(self, routine):
 
         self._reset()
@@ -263,6 +286,7 @@ class GeneticBeastRepresentation():
         self.matrix_row = len(self.matrix)
         self.matrix_col = len(self.matrix[0])
         self.matrix_exc = copy.deepcopy(self.matrix)
+
 
 ant = GeneticBeastRepresentation()
 
@@ -325,6 +349,7 @@ toolbox.register("expr_init", gp.genFull, pset=pset, min_=1, max_=2)
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr_init)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
+
 def evalArtificialAnt(individual):
     # Transform the tree expression to functionnal Python code
     print("enes")
@@ -334,18 +359,20 @@ def evalArtificialAnt(individual):
     print("ant.finalEnergy: " + str(ant.finalEnergy) + " ant.currentBeast.energy: " + str(ant.currentBeast.energy))
     return ant.currentBeast.energy,
 
+
 toolbox.register("evaluate", evalArtificialAnt)
 toolbox.register("select", tools.selTournament, tournsize=7)
 toolbox.register("mate", gp.cxOnePoint)
 toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut)
 
+
 def main():
     print("main")
 
     trail_file = open("santafe_trail.txt")
     ant.parse_matrix(trail_file)
-    
+
     pop = toolbox.population(n=multiprocessing.cpu_count())
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
@@ -357,15 +384,15 @@ def main():
     #rounds = 1
     algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 1, stats, halloffame=hof)
 
-
     print str(hof)
-    
-    file = open("dont_hassle_the_hof", "w")
-    file.write(hof)
-    file.close()
+
+    myFile = open("dont_hassle_the_hof", "wb")
+    pickle.dump(myFile, hof)
+    myFile.close()
     print("hoff written")
 
     return pop, hof, stats
+
 
 if __name__ == "__main__":
     main()
