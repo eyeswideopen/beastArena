@@ -357,6 +357,10 @@ def main():
     stats.register("max", max)
     
     algorithms.eaSimple(pop, toolbox, 0.5, 0.2, 40, stats, halloffame=hof)
+
+    file = open("dont_hassle_the_hof", "w")
+    file.write(hof)
+    file.close()
     
     return pop, hof, stats
 
