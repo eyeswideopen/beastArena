@@ -59,18 +59,18 @@ from scoop import futures
 import GeneticBeast
 import multiprocessing
 
-def progn(*args):
-    for arg in args:
-        arg()
-
-def prog2(out1, out2): 
-    return partial(progn,out1,out2)
-
-def prog3(out1, out2, out3):     
-    return partial(progn,out1,out2,out3)  
+# def progn(*args):
+#     for arg in args:
+#         arg()
+# 
+# def prog2(out1, out2): 
+#     return partial(progn,out1,out2)
+# 
+# def prog3(out1, out2, out3):     
+#     return partial(progn,out1,out2,out3)  
 
 def if_then_else(condition, out1, out2):
-    out1() if condition() else out2()
+    out1() if condition else out2()
 
 game = None
 
@@ -119,6 +119,83 @@ class GeneticBeastRepresentation():
 
     def checkFoodMonsterAtPos(self, pos):
         return True if self.environment[self.translateToBigEnv(pos)] == "*" else False
+
+
+
+
+
+
+
+    def smallerBeastAt0(self, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(0), out1, out2)
+    def smallerBeastAt1(self, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(1), out1, out2)
+    def smallerBeastAt2(self, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(2), out1, out2)
+    def smallerBeastAt3(self, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(3), out1, out2)
+    def smallerBeastAt5(self, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(5), out1, out2)
+    def smallerBeastAt6(self, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(6), out1, out2)
+    def smallerBeastAt7(self, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(7), out1, out2)
+    def smallerBeastAt8(self, out1, out2):
+        return partial(if_then_else, self.checkSmallerMonsterAtPos(8), out1, out2)
+
+    def biggerBeastAt0(self, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(0), out1, out2)
+    def biggerBeastAt1(self, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(1), out1, out2)
+    def biggerBeastAt2(self, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(2), out1, out2)
+    def biggerBeastAt3(self, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(3), out1, out2)
+    def biggerBeastAt5(self, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(5), out1, out2)
+    def biggerBeastAt6(self, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(6), out1, out2)
+    def biggerBeastAt7(self, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(7), out1, out2)
+    def biggerBeastAt8(self, out1, out2):
+        return partial(if_then_else, self.checkBiggerMonsterAtPos(8), out1, out2)
+
+
+    def foodAt0(self, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(0), out1, out2)
+    def foodAt1(self, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(1), out1, out2)
+    def foodAt2(self, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(2), out1, out2)
+    def foodAt3(self, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(3), out1, out2)
+    def foodAt5(self, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(5), out1, out2)
+    def foodAt6(self, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(6), out1, out2)
+    def foodAt7(self, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(7), out1, out2)
+    def foodAt8(self, out1, out2):
+        return partial(if_then_else, self.checkFoodAtPos(8), out1, out2)
+
+    def moveTo0(self):
+        self.move(0)
+    def moveTo1(self):
+        self.move(1)
+    def moveTo2(self):
+        self.move(2)
+    def moveTo3(self):
+        self.move(3)
+    def moveTo5(self):
+        self.move(5)
+    def moveTo6(self):
+        self.move(6)
+    def moveTo7(self):
+        self.move(7)
+    def moveTo8(self):
+        self.move(8)
+
+
 
 
     @property
@@ -182,12 +259,53 @@ class GeneticBeastRepresentation():
 ant = GeneticBeastRepresentation()
 
 pset = gp.PrimitiveSet("MAIN", 0)
-pset.addPrimitive(ant.if_food_ahead, 2)
-pset.addPrimitive(prog2, 2)
-pset.addPrimitive(prog3, 3)
-pset.addTerminal(ant.move_forward)
-pset.addTerminal(ant.turn_left)
-pset.addTerminal(ant.turn_right)
+
+pset.addPrimitive(ant.smallerBeastAt0, 2)
+pset.addPrimitive(ant.smallerBeastAt1, 2)
+pset.addPrimitive(ant.smallerBeastAt2, 2)
+pset.addPrimitive(ant.smallerBeastAt3, 2)
+pset.addPrimitive(ant.smallerBeastAt5, 2)
+pset.addPrimitive(ant.smallerBeastAt6, 2)
+pset.addPrimitive(ant.smallerBeastAt7, 2)
+pset.addPrimitive(ant.smallerBeastAt8, 2)
+
+pset.addPrimitive(ant.biggerBeastAt0, 2)
+pset.addPrimitive(ant.biggerBeastAt1, 2)
+pset.addPrimitive(ant.biggerBeastAt2, 2)
+pset.addPrimitive(ant.biggerBeastAt3, 2)
+pset.addPrimitive(ant.biggerBeastAt5, 2)
+pset.addPrimitive(ant.biggerBeastAt6, 2)
+pset.addPrimitive(ant.biggerBeastAt7, 2)
+pset.addPrimitive(ant.biggerBeastAt8, 2)
+
+pset.addPrimitive(ant.footAt0, 2)
+pset.addPrimitive(ant.footAt1, 2)
+pset.addPrimitive(ant.footAt2, 2)
+pset.addPrimitive(ant.footAt3, 2)
+pset.addPrimitive(ant.footAt5, 2)
+pset.addPrimitive(ant.footAt6, 2)
+pset.addPrimitive(ant.footAt7, 2)
+pset.addPrimitive(ant.footAt8, 2)
+
+pset.addTerminal(ant.moveTo0)
+pset.addTerminal(ant.moveTo1)
+pset.addTerminal(ant.moveTo2)
+pset.addTerminal(ant.moveTo3)
+pset.addTerminal(ant.moveTo5)
+pset.addTerminal(ant.moveTo6)
+pset.addTerminal(ant.moveTo7)
+pset.addTerminal(ant.moveTo8)
+
+
+
+
+
+# pset.addPrimitive(ant.if_food_ahead, 2)
+# pset.addPrimitive(prog2, 2)
+# pset.addPrimitive(prog3, 3)
+# pset.addTerminal(ant.move_forward)
+# pset.addTerminal(ant.turn_left)
+# pset.addTerminal(ant.turn_right)
 
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax, pset=pset)
