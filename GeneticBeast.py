@@ -6,8 +6,7 @@ class GeneticBeast():
     def __init__(self, rep, routine):
         self.routine = routine
         self.rep = rep
-        self.energy = None
-        self.returnValue = 0
+        self.returnValue = 13
         self.environment = ""
 
         self.client = Client("127.0.0.1", "8", self)
@@ -28,7 +27,7 @@ class GeneticBeast():
         self.routine()
 
         if energy == 0 or "Ende" in self.environment:
-            self.energy = energy
+            self.rep.finalEnergy = energy
 
         return self.returnValue
 
@@ -43,7 +42,7 @@ class GeneticBeast():
         #waiting till game is finished
         self.client.listening()
 
-        self.rep.finalEnergy = self.energy
+
 
 
 

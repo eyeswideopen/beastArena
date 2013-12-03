@@ -318,7 +318,7 @@ creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax, pset=
 toolbox = base.Toolbox()
 
 # Attribute generator
-#toolbox.register("map", futures.map)
+toolbox.register("map", futures.map)
 toolbox.register("expr_init", gp.genFull, pset=pset, min_=1, max_=2)
 
 # Structure initializers
