@@ -112,12 +112,20 @@ class GeneticBeastRepresentation():
         return pos - 5 - pos/5*2
 
     def checkBiggerMonsterAtPos(self, pos):
+
+        if not self.environment: return False
+
         return True if self.environment[self.translateToBigEnv(pos)] == ">" else False
 
     def checkSmallerMonsterAtPos(self, pos):
+
+        if not self.environment: return False
+
         return True if self.environment[self.translateToBigEnv(pos)] == "<" else False
 
-    def checkFoodMonsterAtPos(self, pos):
+    def checkFoodAtPos(self, pos):
+        if not self.environment: return False
+
         return True if self.environment[self.translateToBigEnv(pos)] == "*" else False
 
 
@@ -297,9 +305,6 @@ pset.addTerminal(ant.moveTo7)
 pset.addTerminal(ant.moveTo8)
 
 
-
-
-
 # pset.addPrimitive(ant.if_food_ahead, 2)
 # pset.addPrimitive(prog2, 2)
 # pset.addPrimitive(prog3, 3)
@@ -313,7 +318,7 @@ creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax, pset=
 toolbox = base.Toolbox()
 
 # Attribute generator
-toolbox.register("map", futures.map)
+#toolbox.register("map", futures.map)
 toolbox.register("expr_init", gp.genFull, pset=pset, min_=1, max_=2)
 
 # Structure initializers
@@ -328,7 +333,7 @@ def evalArtificialAnt(individual):
     ant.run(routine)
     import time
     time.sleep(3)
-    return 0, #ant.eaten
+    return ant.finalEnergy,
 
 toolbox.register("evaluate", evalArtificialAnt)
 toolbox.register("select", tools.selTournament, tournsize=7)
