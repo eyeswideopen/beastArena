@@ -363,7 +363,7 @@ def evalArtificialAnt(individual):
 toolbox.register("evaluate", evalArtificialAnt)
 toolbox.register("select", tools.selTournament, tournsize=7)
 toolbox.register("mate", gp.cxOnePoint)
-toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
+toolbox.register("expr_mut", gp.genFull, min_=0, max_=10)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut)
 
 
