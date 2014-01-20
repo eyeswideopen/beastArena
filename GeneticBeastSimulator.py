@@ -1,53 +1,4 @@
-#    This file is part of DEAP.
-#
-#    DEAP is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Lesser General Public License as
-#    published by the Free Software Foundation, either version 3 of
-#    the License, or (at your option) any later version.
-#
-#    DEAP is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-#    GNU Lesser General Public License for more details.
-#
-#    You should have received a copy of the GNU Lesser General Public
-#    License along with DEAP. If not, see <http://www.gnu.org/licenses/>.
-
-"""
-This example is from "John R. Koza. Genetic Programming: On the Programming 
-of Computers by Natural Selection. MIT Press, Cambridge, MA, USA, 1992.".
-
-The problem is called The Artificial Ant Problem. 
-<http://www.cs.ucl.ac.uk/staff/w.langdon/bloat_csrp-97-29/node2.html>
-
-The goal of this example is to show how to use DEAP and its GP framework with
-with complex system of functions and object. 
-
-Given an AntSimulator ant, this solution should get the 89 pieces of food
-within 543 moves.
-ant.routine = ant.if_food_ahead(ant.move_forward, prog3(ant.turn_left, 
-                                                  prog2(ant.if_food_ahead(ant.move_forward, ant.turn_right), 
-                                                        prog2(ant.turn_right, prog2(ant.turn_left, ant.turn_right))),
-                                                  prog2(ant.if_food_ahead(ant.move_forward, ant.turn_left), ant.move_forward)))
-
-Best solution found with DEAP:
-prog3(prog3(move_forward, 
-            turn_right, 
-            if_food_ahead(if_food_ahead(prog3(move_forward,
-                                              move_forward, 
-                                              move_forward), 
-                                        prog2(turn_left, 
-                                              turn_right)), 
-                          turn_left)), 
-      if_food_ahead(turn_left, 
-                    turn_left), 
-      if_food_ahead(move_forward, 
-                    turn_right)) 
-fitness = (89,)
-"""
-
 import copy
-import random, time
 from functools import partial
 
 from deap import algorithms
@@ -58,17 +9,7 @@ from deap import gp
 from scoop import futures
 import GeneticBeast
 import multiprocessing
-import pickle
 
-# def progn(*args):
-#     for arg in args:
-#         arg()
-# 
-# def prog2(out1, out2): 
-#     return partial(progn,out1,out2)
-# 
-# def prog3(out1, out2, out3):     
-#     return partial(progn,out1,out2,out3)  
 
 def if_then_else(condition, out1, out2):
     out1() if condition else out2()
@@ -288,53 +229,45 @@ class GeneticBeastRepresentation():
         self.matrix_exc = copy.deepcopy(self.matrix)
 
 
-ant = GeneticBeastRepresentation()
+beastRep = GeneticBeastRepresentation()
 
 pset = gp.PrimitiveSet("MAIN", 0)
 
-pset.addPrimitive(ant.smallerBeastAt0, 2)
-pset.addPrimitive(ant.smallerBeastAt1, 2)
-pset.addPrimitive(ant.smallerBeastAt2, 2)
-pset.addPrimitive(ant.smallerBeastAt3, 2)
-pset.addPrimitive(ant.smallerBeastAt5, 2)
-pset.addPrimitive(ant.smallerBeastAt6, 2)
-pset.addPrimitive(ant.smallerBeastAt7, 2)
-pset.addPrimitive(ant.smallerBeastAt8, 2)
+pset.addPrimitive(beastRep.smallerBeastAt0, 2)
+pset.addPrimitive(beastRep.smallerBeastAt1, 2)
+pset.addPrimitive(beastRep.smallerBeastAt2, 2)
+pset.addPrimitive(beastRep.smallerBeastAt3, 2)
+pset.addPrimitive(beastRep.smallerBeastAt5, 2)
+pset.addPrimitive(beastRep.smallerBeastAt6, 2)
+pset.addPrimitive(beastRep.smallerBeastAt7, 2)
+pset.addPrimitive(beastRep.smallerBeastAt8, 2)
 
-pset.addPrimitive(ant.biggerBeastAt0, 2)
-pset.addPrimitive(ant.biggerBeastAt1, 2)
-pset.addPrimitive(ant.biggerBeastAt2, 2)
-pset.addPrimitive(ant.biggerBeastAt3, 2)
-pset.addPrimitive(ant.biggerBeastAt5, 2)
-pset.addPrimitive(ant.biggerBeastAt6, 2)
-pset.addPrimitive(ant.biggerBeastAt7, 2)
-pset.addPrimitive(ant.biggerBeastAt8, 2)
+pset.addPrimitive(beastRep.biggerBeastAt0, 2)
+pset.addPrimitive(beastRep.biggerBeastAt1, 2)
+pset.addPrimitive(beastRep.biggerBeastAt2, 2)
+pset.addPrimitive(beastRep.biggerBeastAt3, 2)
+pset.addPrimitive(beastRep.biggerBeastAt5, 2)
+pset.addPrimitive(beastRep.biggerBeastAt6, 2)
+pset.addPrimitive(beastRep.biggerBeastAt7, 2)
+pset.addPrimitive(beastRep.biggerBeastAt8, 2)
 
-pset.addPrimitive(ant.foodAt0, 2)
-pset.addPrimitive(ant.foodAt1, 2)
-pset.addPrimitive(ant.foodAt2, 2)
-pset.addPrimitive(ant.foodAt3, 2)
-pset.addPrimitive(ant.foodAt5, 2)
-pset.addPrimitive(ant.foodAt6, 2)
-pset.addPrimitive(ant.foodAt7, 2)
-pset.addPrimitive(ant.foodAt8, 2)
+pset.addPrimitive(beastRep.foodAt0, 2)
+pset.addPrimitive(beastRep.foodAt1, 2)
+pset.addPrimitive(beastRep.foodAt2, 2)
+pset.addPrimitive(beastRep.foodAt3, 2)
+pset.addPrimitive(beastRep.foodAt5, 2)
+pset.addPrimitive(beastRep.foodAt6, 2)
+pset.addPrimitive(beastRep.foodAt7, 2)
+pset.addPrimitive(beastRep.foodAt8, 2)
 
-pset.addTerminal(ant.moveTo0)
-pset.addTerminal(ant.moveTo1)
-pset.addTerminal(ant.moveTo2)
-pset.addTerminal(ant.moveTo3)
-pset.addTerminal(ant.moveTo5)
-pset.addTerminal(ant.moveTo6)
-pset.addTerminal(ant.moveTo7)
-pset.addTerminal(ant.moveTo8)
-
-
-# pset.addPrimitive(ant.if_food_ahead, 2)
-# pset.addPrimitive(prog2, 2)
-# pset.addPrimitive(prog3, 3)
-# pset.addTerminal(ant.move_forward)
-# pset.addTerminal(ant.turn_left)
-# pset.addTerminal(ant.turn_right)
+pset.addTerminal(beastRep.moveTo0)
+pset.addTerminal(beastRep.moveTo1)
+pset.addTerminal(beastRep.moveTo2)
+pset.addTerminal(beastRep.moveTo3)
+pset.addTerminal(beastRep.moveTo5)
+pset.addTerminal(beastRep.moveTo6)
+pset.addTerminal(beastRep.moveTo7)
+pset.addTerminal(beastRep.moveTo8)
 
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax, pset=pset)
@@ -352,12 +285,11 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 def evalArtificialAnt(individual):
     # Transform the tree expression to functionnal Python code
-    print("enes")
     routine = gp.evaluate(individual, pset)
     # Run the generated routine
-    ant.run(routine)
-    print("ant.finalEnergy: " + str(ant.finalEnergy) + " ant.currentBeast.energy: " + str(ant.currentBeast.energy))
-    return ant.currentBeast.energy,
+    beastRep.run(routine)
+    print("finalEnergy: " + str(beastRep.finalEnergy) + " currentBeast.energy: " + str(beastRep.currentBeast.energy))
+    return beastRep.currentBeast.energy,
 
 
 toolbox.register("evaluate", evalArtificialAnt)
@@ -368,10 +300,6 @@ toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut)
 
 
 def main():
-    print("main")
-
-    trail_file = open("santafe_trail.txt")
-    ant.parse_matrix(trail_file)
 
     pop = toolbox.population(n=multiprocessing.cpu_count())
     hof = tools.HallOfFame(1)
