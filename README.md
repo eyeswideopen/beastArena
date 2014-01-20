@@ -3,13 +3,20 @@ beast-arena
 
 beast-arena is a distributed simulation in which artifical creatures ("beasts") act in a two-dimensional world. The beasts act in a world of a specified size of N*N fields however for them it seems to be infinitely due to wrap-around.
 
-
-Prerequisites
-=============
-
-To run beast-arena, the following programs and libraries are required:
-- Python (tested with version 2.7.3)
-- NumPy (e.g. 'apt-get install python-numpy' or http://www.scipy.org/Download)
+Installation
+============
+1. Install Python -> "apt-get install python"
+2. Install PIP -> "apt-get install python-pip"
+3. Install python virual environment tool -> "pip install virtualenv"
+4. Create a new virtual environment for the project to run -> "virtualenv BeastArena"
+5. Activate the virtual environment to work on -> "source BeastArena/bin/activate"
+6. Switch to the created directory -> "cd BeastArena"
+7. Clone github project "BeastArena" -> "git clone https://github.com/eyeswideopen/beastArena.git"
+8. Switch to the directory created by git commamnd -> "cd beastArena"
+9. Install required python packages [numpy / urwid / scoop / deap] -> "pip install -r requirements"
+10. [OPTIONAL] change configuration settings [e.g. urwid visualisation, rounds to play, port etc.] -> vi beast-arena.conf
+11. Start a server game to connect to -> "python BeastArena.py"
+12. Open a new console and navigate to the BeastArena directory again and start the virtualenv. Start the genetic beast simulator with scoop flag -> "python -m scoop GeneticBeastSimulator.py"
 
 
 Components
