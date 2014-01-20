@@ -1,0 +1,11 @@
+1. Install Python -> "apt-get install python"
+2. Install PIP -> "apt-get install python-pip"
+3. Install python virual environment tool -> "pip install virtualenv"
+4. Create a new virtual environment for the project to run -> "virtualenv BeastArena"
+5. Activate the virtual environment to work on -> "source BeastArena/bin/activate"
+6. Switch to the created Folder -> "cd BeastArena"
+7. Clone github project "BeastArena" -> "git clone https://github.com/eyeswideopen/beastArena.git"
+8. Install required python packages [numpy / urwid / scoop] -> "pip install -r requirements"
+9. [OPTIONAL] change configuration settings [e.g. urwid visualisation or rounds to play] -> vi beast-arena.conf
+10. Start a server game to connect to -> "python BeastArena.py"
+11. Open a new console and navigate to the BeastArena directory again. Start the genetic beast simulator with scoop flag -> "python -m scoop GeneticBeastSimulator.py"
